@@ -50,9 +50,13 @@ class ALSrecommend(ss:SparkSession, df:DataFrame) extends Serializable {
 
           val auc = areaUnderCurve(cvData, bAllItemIDs, model.transform)
 
-          model.userFactors.unpersist()
-          model.itemFactors.unpersist()
-          if (auc > gauc) goodModel=model
+
+          if (auc > gauc) {
+            goodModel=model
+          } else {
+            model.userFactors.unpersist()
+            model.itemFactors.unpersist()
+          }
           (auc, (rank, regParam, alpha))
         }
     evaluations.sorted.reverse.foreach(l=>{
